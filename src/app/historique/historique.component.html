@@ -1,0 +1,30 @@
+<!-- nav -->
+<div>
+    <nav class="navbar navbar-expand navbar-light" style="background-color: rgb(231, 231, 250);">
+        <div class="text-center mr-5">
+            <img src="../../assets/img/smartmeter.png" width="150vw" alt="logo"/>
+        </div>
+
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li><a class="nav-item nav-link" routerLink="/">Home</a></li>
+            <li><a class="nav-item nav-link" routerLink="/historique">Historique</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="nav-item nav-link" routerLink="/resetpassword">Change password</a></li>
+            <li><a class="nav-item nav-link" (click)="logout()">Logout</a></li>
+        </ul>
+    </nav> 
+</div>
+
+<div class="container-fluid m-3">
+    <div class="text-center">
+        <h2>Historique des consommations</h2>
+    </div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="text-center">
+            <canvas id="myChart" style="width:200%;max-width:700px"></canvas>
+        </div>
+    </div>
+</div>
