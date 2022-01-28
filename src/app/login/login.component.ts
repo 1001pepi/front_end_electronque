@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AlertService, AuthenticationService } from '../_services'
+import { MeasureService } from '../_services/Measure.service';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
+      private energyService:MeasureService, 
       private authenticationService: AuthenticationService,
       private alertService: AlertService
   ) {

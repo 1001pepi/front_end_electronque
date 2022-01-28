@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService, AuthenticationService } from '../_services';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 @Component({
   selector: 'app-forgot-password',
@@ -30,7 +31,6 @@ export class ForgotPasswordComponent implements OnInit {
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
           username: ['', Validators.required, Validators.email],
-          password: ['', Validators.required]
       });
 
       // get return url from route parameters or default to '/'
@@ -41,6 +41,7 @@ export class ForgotPasswordComponent implements OnInit {
   get f() { return this.loginForm.controls; }
 
   onSubmit() {
+    console.log("hi")
       this.submitted = true;
 
       // reset alerts on submit
@@ -52,19 +53,23 @@ export class ForgotPasswordComponent implements OnInit {
       }
 
       this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value)
-          .then(
-            (res:any) => {
-              console.log(res)
-              localStorage.setItem('currentUser', JSON.stringify(res.user));
-              this.router.navigate(['/logins']);
-            }
-          )
-          .catch(error => {
-            console.log('Something went wrong:', error.message);
-            this.alertService.error("Wrong credentials");
-            this.loading = false;
-          });
+
+      const auth = getAuth();
+    
+      sendPasswordResetEmail(auth, this.f.username.value)
+        .then(() => {
+          this.router.navigate(['/login']);
+          // Password reset email sent!
+          // ..
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(error)
+          // ..
+        });
+
+       
   }
 
 }

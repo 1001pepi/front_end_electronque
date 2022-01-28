@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AlertService, AuthenticationService } from '../_services';
+import { MeasureService } from '../_services/Measure.service';
 
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {
@@ -13,6 +14,7 @@ export class RegisterComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
+        private energyService:MeasureService, 
         private authenticationService: AuthenticationService,
         private alertService: AlertService
     ) {
@@ -51,6 +53,9 @@ export class RegisterComponent implements OnInit {
               res => {
                 console.log('You are Successfully signed up!', res);
                 this.alertService.success('Registration successful', true);
+
+                this.energyService.createUser(this.registerForm.value.username, this.registerForm.value.password)
+
                 this.router.navigate(['/login']);
                 }
             )

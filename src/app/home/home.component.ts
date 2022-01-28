@@ -14,7 +14,10 @@ import { Chart } from 'chart.js';
 export class HomeComponent implements OnInit {
   currentUser: firebase.default.User;
   subscription:Subscription = new Subscription()
+  price:any = 0.0;
+  historySubscription:Subscription = new Subscription()
   public measure:Measure = new Measure("","","","","","")
+  public historique = []
   public interval:Subscription = new Subscription()
   toogle:boolean = true
 
@@ -30,9 +33,17 @@ export class HomeComponent implements OnInit {
     this.subscription = this.energyService.measureSubject.subscribe(
       (measure:any)=>{
         this.measure = measure 
+        this.price = parseFloat(measure.finalEnergyValue) * 0.05;
       }
     )
-    this.interval = interval(5500).subscribe(
+
+    this.historySubscription = this.energyService.historiqueSubject.subscribe(
+      (historique:any)=>{
+        this.historique = historique
+      }
+    )
+
+    this.interval = interval(5000).subscribe(
       ()=>{
         this.energyService.getMeasure()
       },
@@ -41,7 +52,18 @@ export class HomeComponent implements OnInit {
       }
     )
 
+    this.interval = interval(3000).subscribe(
+      ()=>{
+        this.energyService.getMeasures();
+      },
+      (err)=>{
+        console.log('Error:' + err)
+      }
+    )
+
     this.energyService.emitMeasure()
+
+    this.energyService.emitHistorique()
 
     // setInterval(()=>{
     //   console.log("1")
@@ -50,8 +72,37 @@ export class HomeComponent implements OnInit {
     // }, 1000)
 
     /*graphique pour les variables*/
-    var xValues = [50,60,70,80,90,100,110,120,130,140,150];
-    var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ]
+
+    var tmpHistory = []
+
+    if(this.historique.length > 10){
+      tmpHistory = this.historique.filter((historique, index) => this.historique.length - index >= 10)
+
+    }else{
+      tmpHistory = this.historique
+    }
+
+    var xValues = tmpHistory.map(historique => {
+      const date = new Date(historique.date)
+
+      return date.getDate().toString()+ " " + months[date.getMonth()] + " " + date.getFullYear().toString();
+    })
+
+    var yValues = tmpHistory.map(historique => historique.energy);
 
     let ctx:any = document.getElementById("myChart");
     
@@ -71,6 +122,7 @@ export class HomeComponent implements OnInit {
   }
 
   toggleCurrent(){
+    console.log("hi");
     if(this.toogle){
       this.energyService.post("on")
       this.toogle = !this.toogle

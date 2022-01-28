@@ -49,10 +49,13 @@
             <hr style="color: grey; border:solid 1px;">
 
             <div class="m-4">
-                <p>Etat:{{measure.etat}}</p>
-                <button (click)="toggleCurrent()">button</button>
+                <p>Prix: &nbsp;&nbsp; {{price}} &nbsp;FCFA</p>
+
+                <p>Etat: &nbsp;&nbsp;{{measure.etat}}</p>
+
+                <button type="button" class="btn btn-primary" (click)="toggleCurrent()">On/Off</button>
+                
             </div>
-            
         </div>
 
          <div class="col-5 m-3 p-2" style="border: solid 2px; border-radius: 10px; background-color: rgb(247, 247, 252);">
